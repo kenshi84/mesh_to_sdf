@@ -2,22 +2,22 @@ import functools
 import trimesh
 import numpy as np
 
-def scale_to_unit_sphere(mesh):
+def scale_to_unit_sphere(mesh, margin=0):
     if isinstance(mesh, trimesh.Scene):
         mesh = mesh.dump().sum()
 
     vertices = mesh.vertices - mesh.bounding_box.centroid
     distances = np.linalg.norm(vertices, axis=1)
-    vertices /= np.max(distances)
+    vertices /= np.max(distances+margin)
 
     return trimesh.Trimesh(vertices=vertices, faces=mesh.faces)
 
-def scale_to_unit_cube(mesh):
+def scale_to_unit_cube(mesh, margin=0):
     if isinstance(mesh, trimesh.Scene):
         mesh = mesh.dump().sum()
 
     vertices = mesh.vertices - mesh.bounding_box.centroid
-    vertices *= 2 / np.max(mesh.bounding_box.extents)
+    vertices *= 2 / np.max(mesh.bounding_box.extents+2*margin)
 
     return trimesh.Trimesh(vertices=vertices, faces=mesh.faces)
 
